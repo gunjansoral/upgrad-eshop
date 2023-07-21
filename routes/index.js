@@ -5,7 +5,7 @@ const { addAddress } = require('../controllers/shippingAddressController');
 const {
   searchProduct,
   getProductCategories,
-  getProductByProductId,
+  getProductById,
   saveProduct,
   updateProductDetails,
   deleteProduct,
@@ -16,7 +16,7 @@ const { checkAdminAuth } = require('../middleware/checkAdminAuth');
 
 //auth routes
 router.post('/users', signUp);
-router.post('/auth', checkAdminAuth, auth);
+router.post('/auth', auth);
 
 // shipping address routes
 router.post('/addresses', checkUserAuth, addAddress);
@@ -24,10 +24,10 @@ router.post('/addresses', checkUserAuth, addAddress);
 // product routes
 router.get('/products', searchProduct);
 router.post('/products', checkUserAuth, saveProduct);
-// router.get('/products/categories', getProductCategories);
-// router.get('/products/:id', getProductByProductId);
-// router.put('/products/:id', updateProductDetails);
-// router.delete('/products/:id', deleteProduct);
+router.get('/products/categories', getProductCategories);
+router.get('/products/:id', getProductById);
+router.put('/products/:id', checkUserAuth, checkAdminAuth, updateProductDetails);
+router.delete('/products/:id', checkUserAuth, checkAdminAuth, deleteProduct);
 
 // router.post('/orders', createOrder);
 

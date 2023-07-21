@@ -8,9 +8,9 @@ const productSchema = new Schema({
   manufacturer: { type: String, required: true },
   availableItems: { type: Number, required: true },
   price: { type: Number, required: true },
-  imageURL: { type: String, required: true },
+  imageURL: { type: String },
 }, {
   timestamps: true
 });
 
-model('Product', productSchema);
+module.exports = model('Product', productSchema);

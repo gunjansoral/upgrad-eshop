@@ -12,6 +12,7 @@ exports.checkUserAuth = (req, res, next) => {
         return res.status(401).json({ error: 'You are not authorised to access this endpoint!' })
       }
       req.body.email = decoded.email;
+      req.body.password = decoded.password;
     })
     next();
   } else {

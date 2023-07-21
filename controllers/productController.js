@@ -35,36 +35,105 @@ exports.searchProduct = async (req, res) => {
   }
 }
 
-exports.getProductCategories = (req, res) => {
-
+exports.getProductCategories = async (req, res) => {
+  try {
+    const categories = await Product.distinct('category');
+    return res.status(200).json(categories);
+  } catch (err) {
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 }
 
-exports.getProductById = (req, res) => {
+exports.getProductById = async (req, res) => {
+  const { id } = req.params;
 
+  try {
+    const product = await Product.findOne({ _id: id });
+
+    if (!product) {
+      return res.status(404).json({ message: `No Product found for ID - ${id}!` });
+    }
+
+    return res.status(200).json(product);
+  } catch (err) {
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 }
 
 exports.saveProduct = async (req, res) => {
-  const { name, category, price, description, manufacturer, availableItems, imageUrl } = req.body;
+  try {
+    const { name, category, price, description, manufacturer, availableItems, imageUrl } = req.body;
+    console.log(imageUrl);
+    // create a new product and save it in the database
+    const product = new Product({
+      name,
+      category,
+      price,
+      description,
+      manufacturer,
+      availableItems,
+      imageUrl
+    });
+    const savedProduct = await product.save();
 
-  // create a new product and save it in the database
-  const product = new Product({
+    res.status(200).json(savedProduct);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+exports.updateProductDetails = async (req, res) => {
+  const { id } = req.params;
+  const {
     name,
-    category,
-    price,
-    description,
-    manufacturer,
     availableItems,
-    imageUrl
-  });
-  await product.save();
+    price,
+    category,
+    description,
+    imageUrl,
+    manufacturer,
+  } = req.body;
 
-  res.satus(200).json(product)
-}
+  try {
+    const product = await Product.findOne({ _id: id });
+    if (!product) {
+      return res.status(404).json({ message: `No Product found for ID - ${id}!` });
+    }
 
-exports.updateProductDetails = (req, res) => {
+    // updtae product details
+    product.name = name;
+    product.availableItems = availableItems;
+    product.price = price;
+    product.category = category;
+    product.description = description;
+    product.imageUrl = imageUrl;
+    product.manufacturer = manufacturer;
+    product.updatedAt = Date.now();
 
-}
+    await product.save();
 
-exports.deleteProduct = (req, res) => {
+    return res.status(200).json(product);
+  } catch (err) {
+    console.log(err.message)
+    return res.status(500).json({ message: err.message });
+  }
+};
 
+exports.deleteProduct = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const product = await Product.findOne({ _id: id });
+    if (!product) {
+      return res.status(404).json({ message: `No Product found for ID - ${id}!` });
+    }
+
+    // delete the product
+    const deletedProduct = await product.deleteOne({ _id: id })
+
+    return res.status(200).json(deletedProduct);
+  } catch (err) {
+    console.log(err.message)
+    return res.status(500).json({ message: err.message });
+  }
 }
