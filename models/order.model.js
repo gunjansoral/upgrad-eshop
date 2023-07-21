@@ -1,4 +1,4 @@
-const mongoose = require('mogoose');
+const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
 
 const orderSchema = new Schema({
@@ -8,4 +8,4 @@ const orderSchema = new Schema({
   user: { type: Schema.Types.ObjectId, required: true },
 });
 
-model('Order', orderSchema);
+module.exports = model('Order', orderSchema);

@@ -29,6 +29,6 @@ router.get('/products/:id', getProductById);
 router.put('/products/:id', checkUserAuth, checkAdminAuth, updateProductDetails);
 router.delete('/products/:id', checkUserAuth, checkAdminAuth, deleteProduct);
 
-// router.post('/orders', createOrder);
+router.post('/orders', checkUserAuth, createOrder);
 
 module.exports = router;
