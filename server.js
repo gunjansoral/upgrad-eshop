@@ -3,20 +3,19 @@ const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const router = require('./routes/index');
-const PORT = 8000;
 
-const User = require('./models/user.model');
+//middlewares 
+require('dotenv').config();
+app.use(bodyParser.json());
+const { PORT, MONGODB_URI } = process.env;
 
 // connect db
-mongoose.connect('mongodb://127.0.0.1:27017/upgrad-eshop', {
+mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
   .then(() => console.log('db connected'))
   .catch(err => console.log(err));
-
-//middlewares 
-app.use(bodyParser.json());
 
 // routes
 app.use('/', router);

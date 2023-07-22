@@ -31,7 +31,7 @@ exports.signUp = async (req, res) => {
     isAdmin: false,
     name: firstName + ' ' + lastName,
     email,
-    password: hashedPassword,
+    password: hashedPassword
   })
   await user.save()
   console.log('a new user is created', user.name);
@@ -48,6 +48,7 @@ exports.signUp = async (req, res) => {
 
 exports.auth = async (req, res) => {
   const { email, password } = req.body;
+
   // check if user is already exists
   const userExists = await User.findOne({ email });
   if (!userExists) {
@@ -59,7 +60,7 @@ exports.auth = async (req, res) => {
   const passwordIsCorrect = await bcrypt.compare(password, hashedPassword);
   if (!passwordIsCorrect) return res.status(400).json({ error: 'Invalid Credentials!' });
 
-  // generate token and send to user
+  // generate token and attach it to response header
   const token = jwt.sign({ email, password }, 'shhhhh', { expiresIn: '7d' });
   res.setHeader('x-auth-token', token);
 
